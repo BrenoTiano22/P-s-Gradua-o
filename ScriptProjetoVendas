@@ -1,26 +1,26 @@
-`CREATE TABLE clientes (
+CREATE TABLE clientes (
     id_cliente SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     cidade VARCHAR(100) NOT NULL,
     estado CHAR(2) NOT NULL,
     segmento VARCHAR(50) NOT NULL
-);`
+);
 
-`CREATE TABLE produtos (
+CREATE TABLE produtos (
     id_produto SERIAL PRIMARY KEY,
     nome_produto VARCHAR(100) NOT NULL,
     categoria VARCHAR(50) NOT NULL,
     marca VARCHAR(50) NOT NULL,
     preco NUMERIC(12,2) NOT NULL
-);`
+);
 
-`CREATE TABLE vendedores (
+CREATE TABLE vendedores (
     id_vendedor SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     regiao VARCHAR(50) NOT NULL
-);`
+);
 
-`CREATE TABLE vendas (
+CREATE TABLE vendas (
     id_venda SERIAL PRIMARY KEY,
     data_venda DATE NOT NULL,
     id_cliente INT NOT NULL,
@@ -33,9 +33,9 @@
     CONSTRAINT fk_venda_vendedor
         FOREIGN KEY (id_vendedor)
         REFERENCES vendedores(id_vendedor)
-);`
+);
 
-`CREATE TABLE itens_venda (
+CREATE TABLE itens_venda (
     id_item SERIAL PRIMARY KEY,
     id_venda INT NOT NULL,
     id_produto INT NOT NULL,
@@ -49,9 +49,9 @@
     CONSTRAINT fk_item_produto
         FOREIGN KEY (id_produto)
         REFERENCES produtos(id_produto)
-);`
+);
 
-`INSERT INTO vendedores (nome, regiao) VALUES
+INSERT INTO vendedores (nome, regiao) VALUES
 ('Ana Souza', 'Sudeste'),
 ('Bruno Oliveira', 'Sul'),
 ('Carlos Santos', 'Nordeste'),
@@ -61,9 +61,9 @@
 ('Juliana Alves', 'Sul'),
 ('Marcos Pereira', 'Nordeste'),
 ('Patricia Rocha', 'Centro-Oeste'),
-('Ricardo Gomes', 'Norte');`
+('Ricardo Gomes', 'Norte');
 
-`INSERT INTO produtos
+INSERT INTO produtos
 (nome_produto, categoria, marca, preco)
 VALUES
 ('Notebook Pro 14', 'Informática', 'TechMax', 4500.00),
@@ -80,9 +80,9 @@ VALUES
 ('Smartwatch', 'Eletrônicos', 'FitTech', 850.00),
 ('SSD 1TB', 'Armazenamento', 'DataStore', 620.00),
 ('HD Externo 2TB', 'Armazenamento', 'DataStore', 480.00),
-('Webcam Full HD', 'Periféricos', 'Vision', 290.00);`
+('Webcam Full HD', 'Periféricos', 'Vision', 290.00);
 
-`INSERT INTO clientes
+INSERT INTO clientes
 (nome, cidade, estado, segmento)
 VALUES
 ('Empresa Alfa', 'São Paulo', 'SP', 'Empresarial'),
@@ -99,9 +99,9 @@ VALUES
 ('Comercial Manaus', 'Manaus', 'AM', 'Varejo'),
 ('Empresa Paulista', 'Santos', 'SP', 'Empresarial'),
 ('Loja Mineira', 'Uberlândia', 'MG', 'Varejo'),
-('Grupo Sul', 'Florianópolis', 'SC', 'Empresarial');`
+('Grupo Sul', 'Florianópolis', 'SC', 'Empresarial');
 
-`INSERT INTO vendas
+INSERT INTO vendas
 (data_venda, id_cliente, id_vendedor)
 SELECT
     DATE '2024-01-01'
@@ -110,9 +110,9 @@ SELECT
     FLOOR(RANDOM() * 15 + 1)::INT,
 
     FLOOR(RANDOM() * 10 + 1)::INT
-FROM generate_series(1, 3000);`
+FROM generate_series(1, 3000);
 
-`INSERT INTO itens_venda
+INSERT INTO itens_venda
 (
     id_venda,
     id_produto,
@@ -130,11 +130,10 @@ CROSS JOIN LATERAL (
     FROM produtos
     ORDER BY RANDOM()
     LIMIT 1 + FLOOR(RANDOM() * 3)::INT
-) p;`
+) p;
 
 ************************** DW **************************
 
-```
 CREATE TABLE dim_tempo (
     id_tempo INTEGER PRIMARY KEY,
     data DATE NOT NULL,
@@ -144,8 +143,8 @@ CREATE TABLE dim_tempo (
     trimestre INTEGER NOT NULL,
     ano INTEGER NOT NULL
 );
-```
-`INSERT INTO dim_tempo (
+
+INSERT INTO dim_tempo (
     id_tempo,
     data,
     dia,
@@ -182,31 +181,31 @@ FROM generate_series(
     DATE '2024-01-01',
     DATE '2026-12-31',
     INTERVAL '1 day'
-) AS dias(dia_data);`
+) AS dias(dia_data);
 
-`CREATE TABLE dim_cliente (
+CREATE TABLE dim_cliente (
     id_cliente INTEGER PRIMARY KEY,
     nome VARCHAR(100),
     cidade VARCHAR(100),
     estado CHAR(2),
     segmento VARCHAR(50)
-);`
+);
 
-`CREATE TABLE dim_produto (
+CREATE TABLE dim_produto (
     id_produto INTEGER PRIMARY KEY,
     nome_produto VARCHAR(100),
     categoria VARCHAR(50),
     marca VARCHAR(50),
     preco NUMERIC(12,2)
-);`
+);
 
-`CREATE TABLE dim_vendedor (
+CREATE TABLE dim_vendedor (
     id_vendedor INTEGER PRIMARY KEY,
     nome VARCHAR(100),
     regiao VARCHAR(50)
-);`
+);
 
-`CREATE TABLE fato_vendas (
+CREATE TABLE fato_vendas (
     id_venda INTEGER NOT NULL,
     id_tempo INTEGER NOT NULL,
     id_cliente INTEGER NOT NULL,
@@ -232,9 +231,9 @@ FROM generate_series(
     CONSTRAINT fk_fato_vendedor
         FOREIGN KEY (id_vendedor)
         REFERENCES dim_vendedor(id_vendedor)
-);`
+);
 
-`CREATE TABLE fato_vendas (
+CREATE TABLE fato_vendas (
     id_venda INTEGER NOT NULL,
     id_tempo INTEGER NOT NULL,
     id_cliente INTEGER NOT NULL,
@@ -260,10 +259,9 @@ FROM generate_series(
     CONSTRAINT fk_fato_vendedor
         FOREIGN KEY (id_vendedor)
         REFERENCES dim_vendedor(id_vendedor)
-);`
+);
 
-
-`Create Or Replace VIEW vw_relatorio_vendas As
+Create Or Replace VIEW vw_relatorio_vendas As
 Select
     f.id_venda,
     t.data,
@@ -295,4 +293,4 @@ Join dim_cliente c
 Join dim_produto p
     On f.id_produto = p.id_produto
 Join dim_vendedor v
-    On f.id_vendedor = v.id_vendedor;`
+    On f.id_vendedor = v.id_vendedor;
